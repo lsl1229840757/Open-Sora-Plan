@@ -1,4 +1,6 @@
 import sys
+
+from transformers.trainer_callback import TrainerControl, TrainerState
 sys.path.append(".")
 
 from opensora.models.ae.videobase import (
@@ -8,9 +10,9 @@ from opensora.models.ae.videobase import (
     VQVAETrainer,
 )
 import argparse
-from typing import Optional
+from typing import Optional, List
 from accelerate.utils import set_seed
-from transformers import HfArgumentParser, TrainingArguments
+from transformers import HfArgumentParser, TrainingArguments, TrainerCallback
 from dataclasses import dataclass, field, asdict
 
 
@@ -32,6 +34,15 @@ class VQVAETrainingArgument(TrainingArguments):
         default=False, metadata={"help": "Remove columns not required by the model when using an nlp.Dataset."}
     )
 
+def compute_metrics(all_preds):
+    all_nlb_preds, labels = all_preds
+    commitment_losses, perplexitys, recon_losses = all_nlb_preds
+    avg_commitment_loss = commitment_losses.mean()
+    avg_perplexity = perplexitys.mean()
+    avg_recon_losses = recon_losses.mean()
+    return {'perplexity': avg_perplexity, 'commitment_loss': avg_commitment_loss, 'recon_loss': avg_recon_losses}
+
+
 def train(args, vqvae_args, training_args):
     # Load Config
     config = VQVAEConfiguration(**asdict(vqvae_args))
@@ -39,15 +50,23 @@ def train(args, vqvae_args, training_args):
     model = VQVAEModel(config)
     # Load Dataset
     dataset = VQVAEDataset(args.data_path, sequence_length=args.sequence_length, resolution=config.resolution)
+    eval_dataset = VQVAEDataset(args.data_path, sequence_length=args.sequence_length,
+                                 resolution=config.resolution, train=False) if args.do_eval else None
     # Load Trainer
-    trainer = VQVAETrainer(model, training_args, train_dataset=dataset)
-    trainer.train()
+    trainer = VQVAETrainer(model,
+                           training_args,
+                           train_dataset=dataset,
+                           eval_dataset=eval_dataset,
+                           compute_metrics=compute_metrics
+                           )
+    trainer.train(ignore_keys_for_eval=['embeddings', 'encodings'])
 
 
 if __name__ == "__main__":
     parser = HfArgumentParser((VQVAEArgument, VQVAETrainingArgument))
     vqvae_args, training_args = parser.parse_args_into_dataclasses()
     args = argparse.Namespace(**vars(vqvae_args), **vars(training_args))
+
     set_seed(args.seed)
 
     train(args, vqvae_args, training_args)

@@ -43,7 +43,7 @@ def custom_to_video(x: torch.Tensor, fps: float = 2.0, output_file: str = 'outpu
 
 @dataclass
 class DataArguments:
-    data_path: str = field(default="./UCF101")
+    data_path: str = field(default="datasets/UCF-101")
     video_num_frames: int = field(default=17)
     sample_rate: int = field(default=1)
 

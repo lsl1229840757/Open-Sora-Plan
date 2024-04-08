@@ -24,7 +24,10 @@ accelerate launch \
   --downsample "4,4,4" \
   --resolution 128 \
   --sequence_length 16 \
-  --output_dir results/videogpt_444_128 \
+  --output_dir results/videogpt_444_128_with_eval \
   --bf16 True \
   --fp16 False \
-  --report_to tensorboard
+  --report_to tensorboard \
+  --evaluation_strategy epoch \
+  --label_names labels \
+  --dataloader_num_workers 10

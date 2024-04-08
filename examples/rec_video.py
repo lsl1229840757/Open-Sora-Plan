@@ -1,3 +1,5 @@
+import os
+from os import path as osp
 import random
 import argparse
 from typing import Optional
@@ -103,14 +105,17 @@ def main(args: argparse.Namespace):
         video_recon = vqvae.decode(encodings)
 
     # custom_to_video(x_vae[0], fps=sample_fps/sample_rate, output_file='origin_input.mp4')
-    custom_to_video(video_recon[0], fps=sample_fps/sample_rate, output_file=args.rec_path)
+    os.makedirs(args.rec_dir, exist_ok=True)
+    
+    output_file = osp.join(args.rec_dir, osp.splitext(osp.basename(video_path))[0]+'.mp4')
+    custom_to_video(video_recon[0], fps=sample_fps/sample_rate, output_file=output_file)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video-path', type=str, default='')
-    parser.add_argument('--rec-path', type=str, default='')
-    parser.add_argument('--ckpt', type=str, default='ucf101_stride4x4x4')
+    parser.add_argument('--video-path', type=str, default='assets/dino_demo.mp4')
+    parser.add_argument('--rec-dir', type=str, default='./rec_dir')
+    parser.add_argument('--ckpt', type=str, default='results/videogpt_444_128_with_eval/checkpoint-20000')
     parser.add_argument('--sample-fps', type=int, default=30)
     parser.add_argument('--resolution', type=int, default=336)
     parser.add_argument('--crop-size', type=int, default=None)

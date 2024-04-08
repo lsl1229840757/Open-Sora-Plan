@@ -9,7 +9,8 @@ import json
 class VQVAETrainer(VideoBaseTrainer):
 
     def compute_loss(self, model, inputs, return_outputs=False):
-        model = model.module
+        if hasattr(model, 'module'):
+            model = model.module
         x = inputs.get("video")
         z = model.pre_vq_conv(model.encoder(x))
         vq_output = model.codebook(z)
@@ -17,5 +18,9 @@ class VQVAETrainer(VideoBaseTrainer):
         recon_loss = F.mse_loss(x_recon, x) / 0.06
         commitment_loss = vq_output['commitment_loss']
         loss = recon_loss + commitment_loss
-        return loss
 
+        if return_outputs:
+            # for evaluate with labels
+            return loss, {**vq_output, 'recon_loss': recon_loss}
+
+        return loss

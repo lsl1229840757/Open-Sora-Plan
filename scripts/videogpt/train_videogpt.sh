@@ -4,8 +4,8 @@ accelerate launch \
   opensora/train/train_videogpt.py \
   --do_train \
   --seed 1234 \
-  --data_path "/remote-home/yeyang/UCF-101/" \
-  --per_device_train_batch_size 8  \
+  --data_path "datasets/UCF-101/" \
+  --per_device_train_batch_size 4  \
   --gradient_accumulation_steps 1 \
   --learning_rate 7e-4 \
   --weight_decay 0. \
@@ -22,8 +22,8 @@ accelerate launch \
   --n_res_layers 4 \
   --downsample "4,4,4" \
   --resolution 256 \
-  --sequence_length 17 \
-  --output_dir results/videogpt_488_256_17 \
+  --sequence_length 16 \
+  --output_dir results/videogpt_444_256_16 \
   --bf16 True \
   --fp16 False \
   --report_to tensorboard \

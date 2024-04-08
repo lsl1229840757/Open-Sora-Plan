@@ -12,3 +12,5 @@ wandb/
 .idea
 *.ipynb
 *.jpg
+*.log
+.vscode/
