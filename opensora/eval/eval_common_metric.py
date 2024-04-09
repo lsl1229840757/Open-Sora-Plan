@@ -27,24 +27,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 import os
 import os.path as osp
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 import numpy as np
-import clip
 import torch
-from PIL import Image
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, Subset
 from decord import VideoReader, cpu
 import random
 from pytorchvideo.transforms import ShortSideScale
 from torchvision.io import read_video
 from torchvision.transforms import Lambda, Compose
-from torchvision.transforms._transforms_video import RandomCropVideo
-from eval.cal_lpips import calculate_lpips
-from eval.cal_fvd import calculate_fvd
-from eval.cal_psnr import calculate_psnr
-from eval.cal_ssim import calculate_ssim
+from torchvision.transforms._transforms_video import CenterCropVideo
+import sys
+sys.path.append(".")
+from opensora.eval.cal_lpips import calculate_lpips
+from opensora.eval.cal_fvd import calculate_fvd
+from opensora.eval.cal_psnr import calculate_psnr
+from opensora.eval.cal_flolpips import calculate_flolpips
+from opensora.eval.cal_ssim import calculate_ssim
 
 try:
     from tqdm import tqdm
@@ -79,6 +81,7 @@ class VideoDataset(Dataset):
             raise IndexError
         real_video_file = self.real_video_files[index]
         generated_video_file = self.generated_video_files[index]
+        print(real_video_file, generated_video_file)
         real_video_tensor  = self._load_video(real_video_file)
         generated_video_tensor  = self._load_video(generated_video_file)
         return {'real': real_video_tensor, 'generated':generated_video_tensor }
@@ -91,8 +94,8 @@ class VideoDataset(Dataset):
         total_frames = len(decord_vr)
         sample_frames_len = sample_rate * num_frames
 
-        if total_frames > sample_frames_len:
-            s = random.randint(0, total_frames - sample_frames_len - 1)
+        if total_frames >= sample_frames_len:
+            s = 0
             e = s + sample_frames_len
             num_frames = num_frames
         else:
@@ -112,20 +115,21 @@ class VideoDataset(Dataset):
 
     def _combine_without_prefix(self, folder_path, prefix='.'):
         folder = []
+        os.makedirs(folder_path, exist_ok=True)
         for name in os.listdir(folder_path):
             if name[0] == prefix:
                 continue
-            folder.append(osp.join(folder_path, name))
+            if osp.isfile(osp.join(folder_path, name)):
+                folder.append(osp.join(folder_path, name))
         folder.sort()
         return folder
 
 def _preprocess(video_data, short_size=128, crop_size=None):
     transform = Compose(
         [
-            Lambda(lambda x: ((x / 255.0) - 0.5)),
+            Lambda(lambda x: x / 255.0),
             ShortSideScale(size=short_size),
-            RandomCropVideo(size=crop_size) if crop_size is not None else Lambda(lambda x: x),
-
+            CenterCropVideo(crop_size=crop_size),
         ]
     )
     video_outputs = transform(video_data)
@@ -133,23 +137,25 @@ def _preprocess(video_data, short_size=128, crop_size=None):
     return video_outputs
 
 
-def calculate_common_metric(args, dataloader,device):
+def calculate_common_metric(args, dataloader, device):
 
     score_list = []
     for batch_data in tqdm(dataloader): # {'real': real_video_tensor, 'generated':generated_video_tensor }
         real_videos = batch_data['real'] 
         generated_videos = batch_data['generated']
-        
+        assert real_videos.shape[2] == generated_videos.shape[2]
         if args.metric == 'fvd':
-            tmp_list = list(calculate_fvd(real_videos, generated_videos, args.device, method=args.fvd_method)['value'].keys())
+            tmp_list = list(calculate_fvd(real_videos, generated_videos, args.device, method=args.fvd_method)['value'].values())
         elif args.metric == 'ssim':
-            tmp_list = list(calculate_ssim(real_videos, generated_videos)['value'].keys())
+            tmp_list = list(calculate_ssim(real_videos, generated_videos)['value'].values())
         elif args.metric == 'psnr':
-            tmp_list = list(calculate_psnr(real_videos, generated_videos)['value'].keys())
+            tmp_list = list(calculate_psnr(real_videos, generated_videos)['value'].values())
+        elif args.metric == 'flolpips':
+            result = calculate_flolpips(real_videos, generated_videos, args.device)
+            tmp_list = list(result['value'].values())
         else:
-            tmp_list  = list(calculate_lpips(real_videos, generated_videos, args.device)['value'].keys())
+            tmp_list  = list(calculate_lpips(real_videos, generated_videos, args.device)['value'].values())
         score_list += tmp_list
-        
     return np.mean(score_list)
         
 def main():
@@ -162,15 +168,16 @@ def main():
                     help=('the path of generated videos`'))
     parser.add_argument('--device', type=str, default=None,
                     help='Device to use. Like cuda, cuda:0 or cpu')
-    parser.add_argument('--num-workers', type=int, default=8,
+    parser.add_argument('--num_workers', type=int, default=8,
                     help=('Number of processes to use for data loading. '
                           'Defaults to `min(8, num_cpus)`'))
-    parser.add_argument('--sample-fps', type=int, default=30)
+    parser.add_argument('--sample_fps', type=int, default=30)
     parser.add_argument('--resolution', type=int, default=336)
     parser.add_argument('--crop_size', type=int, default=None)
     parser.add_argument('--num_frames', type=int, default=100)
     parser.add_argument('--sample_rate', type=int, default=1)
-    parser.add_argument("--metric", type=str, default="fvd",choices=['fvd','psnr','ssim','lpips'])
+    parser.add_argument('--subset_size', type=int, default=None)
+    parser.add_argument("--metric", type=str, default="fvd",choices=['fvd','psnr','ssim','lpips', 'flolpips'])
     parser.add_argument("--fvd_method", type=str, default='styleganv',choices=['styleganv','videogpt'])
 
 
@@ -200,7 +207,11 @@ def main():
                             num_frames = args.num_frames,
                             sample_rate = args.sample_rate,
                             crop_size=args.crop_size,
-                            resolution=args.resolution)
+                            resolution=args.resolution) 
+
+    if args.subset_size:
+        indices = range(args.subset_size)
+        dataset = Subset(dataset, indices=indices)
     
     dataloader = DataLoader(dataset, args.batch_size, 
                             num_workers=num_workers, pin_memory=True)

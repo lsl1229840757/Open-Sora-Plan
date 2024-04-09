@@ -3,10 +3,10 @@ import sys
 from transformers.trainer_callback import TrainerControl, TrainerState
 sys.path.append(".")
 
+from opensora.models.ae.videobase.dataset_videobase import VideoDataset
 from opensora.models.ae.videobase import (
     VQVAEModel,
     VQVAEConfiguration,
-    VQVAEDataset,
     VQVAETrainer,
 )
 import argparse
@@ -49,8 +49,8 @@ def train(args, vqvae_args, training_args):
     # Load Model
     model = VQVAEModel(config)
     # Load Dataset
-    dataset = VQVAEDataset(args.data_path, sequence_length=args.sequence_length, resolution=config.resolution)
-    eval_dataset = VQVAEDataset(args.data_path, sequence_length=args.sequence_length,
+    dataset = VideoDataset(args.data_path, sequence_length=args.sequence_length, resolution=config.resolution)
+    eval_dataset = VideoDataset(args.data_path, sequence_length=args.sequence_length,
                                  resolution=config.resolution, train=False) if args.do_eval else None
     # Load Trainer
     trainer = VQVAETrainer(model,

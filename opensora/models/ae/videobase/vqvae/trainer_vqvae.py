@@ -12,6 +12,7 @@ class VQVAETrainer(VideoBaseTrainer):
         if hasattr(model, 'module'):
             model = model.module
         x = inputs.get("video")
+        x = x / 2
         z = model.pre_vq_conv(model.encoder(x))
         vq_output = model.codebook(z)
         x_recon = model.decoder(model.post_vq_conv(vq_output["embeddings"]))

@@ -12,5 +12,7 @@ wandb/
 .idea
 *.ipynb
 *.jpg
+*.mp3
+*.safetensors
 *.log
-.vscode/
+.vscode

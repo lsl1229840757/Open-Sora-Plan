@@ -22,8 +22,8 @@ accelerate launch \
   --n_res_layers 4 \
   --downsample "4,4,4" \
   --resolution 256 \
-  --sequence_length 16 \
-  --output_dir results/videogpt_444_256_16 \
+  --sequence_length 17 \
+  --output_dir results/videogpt_488_256_17 \
   --bf16 True \
   --fp16 False \
   --report_to tensorboard \
