@@ -139,18 +139,25 @@ def main(args: argparse.Namespace):
         image = Image.fromarray(x)
         image.save(args.rec_path.replace('mp4', 'jpg'))
     else:
-        custom_to_video(video_recon[0], fps=args.fps, output_file=args.rec_path)
+
+        from os import path as osp
+        import os
+
+        os.makedirs(args.rec_dir, exist_ok=True)
+        output_file = osp.join(args.rec_dir, osp.splitext(osp.basename(args.video_path))[0]+'.mp4')
+        custom_to_video(video_recon[0], fps=args.fps, output_file=output_file)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_path', type=str, default='')
-    parser.add_argument('--rec_path', type=str, default='')
-    parser.add_argument('--ae', type=str, default='')
-    parser.add_argument('--model_path', type=str, default='results/pretrained')
+    parser.add_argument('--video_path', type=str, default='assets/dino_demo.mp4')
+    parser.add_argument('--rec_dir', type=str, default='rec_dir/causalvae/')
+    parser.add_argument('--ae', type=str, default='CausalVAEModel_4x8x8')
+    parser.add_argument('--model_path', type=str, default='results/causalvae')
     parser.add_argument('--fps', type=int, default=30)
-    parser.add_argument('--resolution', type=int, default=336)
-    parser.add_argument('--crop_size', type=int, default=None)
+    # parser.add_argument('--resolution', type=int, default=336)
+    parser.add_argument('--resolution', type=int, default=128)
+    parser.add_argument('--crop_size', type=int, default=128)
     parser.add_argument('--num_frames', type=int, default=100)
     parser.add_argument('--sample_rate', type=int, default=1)
     parser.add_argument('--device', type=str, default="cuda")

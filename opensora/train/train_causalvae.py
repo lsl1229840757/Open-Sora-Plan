@@ -1,5 +1,6 @@
 import sys
 sys.path.append(".")
+
 import torch
 import random
 import numpy as np
@@ -19,13 +20,14 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 
 @dataclass
 class TrainingArguments:
-    exp_name: str = field(default="causalvae")
+    exp_name: str = field(default="causalvae_r32")
     batch_size: int = field(default=1)
     precision: str = field(default="bf16")
     max_steps: int = field(default=100000)
     save_steps: int = field(default=2000)
-    output_dir: str = field(default="results/causalvae")
-    video_path: str = field(default="/remote-home1/dataset/data_split_tt")
+    # output_dir: str = field(default="results/causalvae")
+    output_dir: str = field(init=False)
+    video_path: str = field(default="datasets/UCF-101")
     video_num_frames: int = field(default=17)
     sample_rate: int = field(default=1)
     dynamic_sample: bool = field(default=False)
@@ -36,7 +38,9 @@ class TrainingArguments:
     num_workers: int = field(default=8)
     resume_from_checkpoint: str = field(default=None)
     load_from_checkpoint: str = field(default=None)
-    
+
+    def __post_init__(self):
+        self.output_dir = f'results/{self.exp_name}'
     
 def set_seed(seed=1006):
     torch.manual_seed(seed)
@@ -52,17 +56,17 @@ def load_callbacks_and_logger(args):
         save_on_train_epoch_end=False,
     )
     lr_monitor = LearningRateMonitor(logging_interval="step")
-    logger = WandbLogger(name=args.exp_name, log_model=False)
+    logger = WandbLogger(name=args.exp_name, log_model=False, project='causalvae_ucf101')
     return [checkpoint_callback, lr_monitor], logger
 
 def train(args):
     set_seed()
     # Load Config
     model = CausalVAEModel()
-    if args.load_from_checkpoint is not None:
-        model = CausalVAEModel.from_pretrained(args.load_from_checkpoint)
-    else:
-        model = CausalVAEModel.from_config(args.model_config)
+    # if args.load_from_checkpoint is not None:
+    #     model = CausalVAEModel.from_pretrained(args.load_from_checkpoint)
+    # else:
+    #     model = CausalVAEModel.from_config(args.model_config)
         
     if (dist.is_initialized() and dist.get_rank() == 0) or not dist.is_initialized():
         print(model)

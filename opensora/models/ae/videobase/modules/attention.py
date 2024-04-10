@@ -58,7 +58,7 @@ class AttnBlock3D(Block):
 
         # compute attention
         b, c, t, h, w = q.shape
-        q = q.reshape(b * t, c, h * w)
+        q = q.reshape(b * t, c, h * w)  # TODO bug! need to permute before reshape
         q = q.permute(0, 2, 1)  # b,hw,c
         k = k.reshape(b * t, c, h * w)  # b,c,hw
         w_ = torch.bmm(q, k)  # b,hw,hw    w[b,i,j]=sum_c q[b,i,c]k[b,c,j]

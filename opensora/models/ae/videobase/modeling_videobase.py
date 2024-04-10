@@ -67,7 +67,7 @@ class VideoBaseAE_PL(pl.LightningModule, ModelMixin, ConfigMixin):
     
     @classmethod
     def from_pretrained(cls, pretrained_model_name_or_path: Optional[Union[str, os.PathLike]], **kwargs):
-        ckpt_files = glob.glob(os.path.join(pretrained_model_name_or_path, '*.ckpt'))
+        ckpt_files = sorted(glob.glob(os.path.join(pretrained_model_name_or_path, '*.ckpt')))
         if ckpt_files:
             # Adapt to PyTorch Lightning
             last_ckpt_file = ckpt_files[-1]
