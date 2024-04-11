@@ -150,10 +150,10 @@ def main(args: argparse.Namespace):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_path', type=str, default='assets/dino_demo.mp4')
-    parser.add_argument('--rec_dir', type=str, default='rec_dir/causalvae/')
+    parser.add_argument('--video_path', type=str, default='datasets/UCF-101/test/ApplyLipstick/v_ApplyLipstick_g01_c01.avi')
+    parser.add_argument('--rec_dir', type=str, default='rec_dir/causalvae_r128_bs16')
     parser.add_argument('--ae', type=str, default='CausalVAEModel_4x8x8')
-    parser.add_argument('--model_path', type=str, default='results/causalvae')
+    parser.add_argument('--model_path', type=str, default='results/causalvae_r128_bs16')
     parser.add_argument('--fps', type=int, default=30)
     # parser.add_argument('--resolution', type=int, default=336)
     parser.add_argument('--resolution', type=int, default=128)

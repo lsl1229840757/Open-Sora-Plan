@@ -71,7 +71,7 @@ class VideoBaseAE_PL(pl.LightningModule, ModelMixin, ConfigMixin):
         if ckpt_files:
             # Adapt to PyTorch Lightning
             last_ckpt_file = ckpt_files[-1]
-            config_file = os.path.join(pretrained_model_name_or_path, cls.config_name)
+            config_file = os.path.join(pretrained_model_name_or_path, 'hf', cls.config_name)
             model = cls.from_config(config_file)
             print("init from {}".format(last_ckpt_file))
             model.init_from_ckpt(last_ckpt_file)

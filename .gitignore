@@ -16,3 +16,4 @@ wandb/
 *.safetensors
 *.log
 .vscode
+rec_dir/
