@@ -34,7 +34,7 @@ def TemporalRandomCrop(total_frames, size):
 
 def resize(x, resolution):
     height, width = x.shape[-2:]
-    resolution = min(2 * resolution, height, width)
+    # resolution = min(2 * resolution, height, width)
     aspect_ratio = width / height
     if width <= height:
         new_width = resolution
@@ -61,7 +61,7 @@ class VideoDataset(data.Dataset):
 
         self.transform = transforms.Compose([
             ToTensorVideo(),
-            # Lambda(lambda x: resize(x, self.resolution)),
+            Lambda(lambda x: resize(x, self.resolution)),
             CenterCropVideo(self.resolution),
             Lambda(lambda x: 2.0 * x - 1.0)
         ])

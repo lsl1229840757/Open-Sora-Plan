@@ -6,6 +6,7 @@ from typing import Optional
 import cv2
 import numpy as np
 import numpy.typing as npt
+import imageio
 import torch
 from PIL import Image
 from decord import VideoReader, cpu
@@ -38,9 +39,10 @@ def custom_to_video(x: torch.Tensor, fps: float = 2.0, output_file: str = 'outpu
     x = x.detach().cpu()
     x = torch.clamp(x, -1, 1)
     x = (x + 1) / 2
-    x = x.permute(0, 2, 3, 1).numpy()
+    x = x.permute(0, 2, 3, 1).float().numpy()
     x = (255 * x).astype(np.uint8)
-    array_to_video(x, fps=fps, output_file=output_file)
+    # array_to_video(x, fps=fps, output_file=output_file)
+    imageio.mimwrite(output_file, x, fps=fps, quality=9)
     return
 
 
@@ -118,14 +120,19 @@ def main(args: argparse.Namespace):
         vae.vae.tile_overlap_factor = args.tile_overlap_factor
     vae.eval()
     vae = vae.to(device)
-    vae = vae.half()
+    # vae = vae.half()
+    dtype = torch.bfloat16
+    # vae = vae.half()
+    vae = vae.to(dtype)
 
     with torch.no_grad():
         x_vae = preprocess(read_video(args.video_path, args.num_frames, args.sample_rate), args.resolution,
                            args.crop_size)
-        x_vae = x_vae.to(device, dtype=torch.float16)  # b c t h w
+        # x_vae = x_vae.to(device, dtype=torch.float16)  # b c t h w
+        x_vae = x_vae.to(device, dtype=dtype)  # b c t h w
         latents = vae.encode(x_vae)
-        latents = latents.to(torch.float16)
+        # latents = latents.to(torch.float16)
+        latents = latents.to(dtype)
         video_recon = vae.decode(latents)  # b t c h w
 
     if video_recon.shape[2] == 1:
@@ -151,14 +158,16 @@ def main(args: argparse.Namespace):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--video_path', type=str, default='datasets/UCF-101/test/ApplyLipstick/v_ApplyLipstick_g01_c01.avi')
-    parser.add_argument('--rec_dir', type=str, default='rec_dir/causalvae_r128_bs16')
+    # parser.add_argument('--rec_dir', type=str, default='rec_dir/Open-Sora-Plan-v1.0.0')
+    parser.add_argument('--rec_dir', type=str, default='rec_dir/causalvae_r128_bs1_clip17_saveckpt_200k_bf16')
     parser.add_argument('--ae', type=str, default='CausalVAEModel_4x8x8')
-    parser.add_argument('--model_path', type=str, default='results/causalvae_r128_bs16')
-    parser.add_argument('--fps', type=int, default=30)
-    # parser.add_argument('--resolution', type=int, default=336)
-    parser.add_argument('--resolution', type=int, default=128)
-    parser.add_argument('--crop_size', type=int, default=128)
-    parser.add_argument('--num_frames', type=int, default=100)
+    # parser.add_argument('--model_path', type=str, default='hf_models/Open-Sora-Plan-v1.0.0/vae/diffusion_pytorch_model.safetensors')
+    parser.add_argument('--model_path', type=str, default='results/causalvae_r128_bs1_clip17_saveckpt_200k/model-epoch=14-step=187000.ckpt')
+    # parser.add_argument('--fps', type=int, default=30)
+    parser.add_argument('--fps', type=int, default=10)
+    parser.add_argument('--resolution', type=int, default=256)
+    parser.add_argument('--crop_size', type=int, default=None)
+    parser.add_argument('--num_frames', type=int, default=17)
     parser.add_argument('--sample_rate', type=int, default=1)
     parser.add_argument('--device', type=str, default="cuda")
     parser.add_argument('--tile_overlap_factor', type=float, default=0.25)

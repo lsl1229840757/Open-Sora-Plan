@@ -1,332 +1,218 @@
-# Open-Sora Plan
-<!--
-[[Project Page]](https://pku-yuangroup.github.io/Open-Sora-Plan/) [[中文主页]](https://pku-yuangroup.github.io/Open-Sora-Plan/blog_cn.html)
--->
+# Git Large File Storage
 
-[![slack badge](https://img.shields.io/badge/Discord-join-blueviolet?logo=discord&amp)](https://discord.gg/vqGmpjkSaz)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-green?logo=wechat&amp)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/issues/53#issuecomment-1987226516)
-[![Twitter](https://img.shields.io/badge/-Twitter@LinBin46984-black?logo=twitter&logoColor=1D9BF0)](https://x.com/LinBin46984/status/1763476690385424554?s=20) <br>
-[![hf_space](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue.svg)](https://huggingface.co/spaces/LanguageBind/Open-Sora-Plan-v1.0.0)
-[![hf_space](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue.svg)](https://huggingface.co/spaces/fffiloni/Open-Sora-Plan-v1-0-0)
-[![Replicate demo and cloud API](https://replicate.com/camenduru/open-sora-plan-512x512/badge)](https://replicate.com/camenduru/open-sora-plan-512x512)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/camenduru/Open-Sora-Plan-jupyter/blob/main/Open_Sora_Plan_jupyter.ipynb) <br>
-[![License](https://img.shields.io/badge/License-MIT-yellow)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/blob/main/LICENSE) 
-[![GitHub repo contributors](https://img.shields.io/github/contributors-anon/PKU-YuanGroup/Open-Sora-Plan?style=flat&label=Contributors)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/graphs/contributors) 
-[![GitHub Commit](https://img.shields.io/github/commit-activity/m/PKU-YuanGroup/Open-Sora-Plan?label=Commit)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/commits/main/)
-[![Pr](https://img.shields.io/github/issues-pr-closed-raw/PKU-YuanGroup/Open-Sora-Plan.svg?label=Merged+PRs&color=green)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/pulls)
-[![GitHub issues](https://img.shields.io/github/issues/PKU-YuanGroup/Open-Sora-Plan?color=critical&label=Issues)](https://github.com/PKU-YuanGroup/Video-LLaVA/issues?q=is%3Aopen+is%3Aissue)
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/PKU-YuanGroup/Open-Sora-Plan?color=success&label=Issues)](https://github.com/PKU-YuanGroup/Video-LLaVA/issues?q=is%3Aissue+is%3Aclosed) <br>
-[![GitHub repo stars](https://img.shields.io/github/stars/PKU-YuanGroup/Open-Sora-Plan?style=flat&logo=github&logoColor=whitesmoke&label=Stars)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/stargazers)&#160;
-[![GitHub repo forks](https://img.shields.io/github/forks/PKU-YuanGroup/Open-Sora-Plan?style=flat&logo=github&logoColor=whitesmoke&label=Forks)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/network)&#160;
-[![GitHub repo watchers](https://img.shields.io/github/watchers/PKU-YuanGroup/Open-Sora-Plan?style=flat&logo=github&logoColor=whitesmoke&label=Watchers)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/watchers)&#160;
-[![GitHub repo size](https://img.shields.io/github/repo-size/PKU-YuanGroup/Open-Sora-Plan?style=flat&logo=github&logoColor=whitesmoke&label=Repo%20Size)](https://github.com/PKU-YuanGroup/Open-Sora-Plan/archive/refs/heads/main.zip)
+[![CI status][ci_badge]][ci_url]
 
-We are thrilled to present **Open-Sora-Plan v1.0.0**, which significantly enhances video generation quality and text control capabilities. See our [report](docs/Report-v1.0.0.md). We are training for higher resolution (>1024) as well as longer duration (>10s) videos, here is a preview of the next release. We show compressed .gif on github, which loses some quality.
+[ci_badge]: https://github.com/git-lfs/git-lfs/workflows/CI/badge.svg
+[ci_url]: https://github.com/git-lfs/git-lfs/actions?query=workflow%3ACI
 
-Thanks to **HUAWEI Ascend NPU Team** for supporting us.
+[Git LFS](https://git-lfs.github.com) is a command line extension and
+[specification](docs/spec.md) for managing large files with Git.
 
-目前已支持国产AI芯片(华为昇腾910b，期待更多国产算力芯片)进行推理，下一步将支持国产算力训练，具体可参考[PR180
-](https://github.com/PKU-YuanGroup/Open-Sora-Plan/pull/180).
+The client is written in Go, with pre-compiled binaries available for Mac,
+Windows, Linux, and FreeBSD. Check out the [website](http://git-lfs.github.com)
+for an overview of features.
 
-| 257×512×512 (10s) | 65×1024×1024 (2.7s) | 65×1024×1024 (2.7s) | 
-| --- | --- | --- |
-| <img src="assets/pvvm5-5hm65.gif" width=224> |  <img src="assets/nr2a2-oe6qj.gif" width=448> |<img src="assets/ns4et-xj8ax.gif" width=448>  |  
-| Time-lapse of a coastal landscape transitioning from sunrise to nightfall...  |  A quiet beach at dawn, the waves gently lapping at the shore and the sky painted in pastel hues....|Sunset over the sea.  | 
+## Getting Started
 
+### Downloading
 
-| 65×512×512 (2.7s) | 65×512×512 (2.7s) | 65×512×512 (2.7s) |
-| --- | --- | --- |
-| <img src="assets/rrdqk-puoud.gif" width=224> | <img src="assets/dpvj8-y3ubn.gif" width=224>  | <img src="assets/i1ude-11d4e.gif" width=224> |
-| A serene underwater scene featuring a sea turtle swimming... | Yellow and black tropical fish dart through the sea.  | a dynamic interaction between the ocean and a large rock...  |
-| <img src="assets/y70q9-y5tip.gif" width=224> | <img src="assets/ozg76-g1aqh.gif" width=224>  | <img src="assets/kntw7-iuluy.gif" width=224> |
-| The dynamic movement of tall, wispy grasses swaying in the wind... | Slow pan upward of blazing oak fire in an indoor fireplace.  | A serene waterfall cascading down moss-covered rocks...  |
+You can install the Git LFS client in several different ways, depending on your
+setup and preferences.
 
+* **Linux users**. Debian and RPM packages are available from
+  [PackageCloud](https://packagecloud.io/github/git-lfs/install).
+* **macOS users**. [Homebrew](https://brew.sh) bottles are distributed, and can
+  be installed via `brew install git-lfs`.
+* **Windows users**. Git LFS is included in the distribution of
+  [Git for Windows](https://gitforwindows.org/). Alternatively, you can
+  install a recent version of Git LFS from the [Chocolatey](https://chocolatey.org/) package manager.
+* **Binary packages**. In addition, [binary packages](https://github.com/git-lfs/git-lfs/releases) are
+available for Linux, macOS, Windows, and FreeBSD.
+* **Building from source**. [This repository](https://github.com/git-lfs/git-lfs.git) can also be
+built from source using the latest version of [Go](https://golang.org), and the
+available instructions in our
+[Wiki](https://github.com/git-lfs/git-lfs/wiki/Installation#source).
 
+### Installing
 
+#### From binary
 
+The [binary packages](https://github.com/git-lfs/git-lfs/releases) include a script which will:
 
-## 💪 Goal
-This project aims to create a simple and scalable repo, to reproduce [Sora](https://openai.com/sora) (OpenAI, but we prefer to call it "ClosedAI" ). We wish the open-source community can contribute to this project. Pull requests are welcome!!!
+- Install Git LFS binaries onto the system `$PATH`
+- Run `git lfs install` to
+perform required global configuration changes.
 
-本项目希望通过开源社区的力量复现Sora，由北大-兔展AIGC联合实验室共同发起，当前版本离目标差距仍然较大，仍需持续完善和快速迭代，欢迎Pull request！！！
-
-Project stages:
-- Primary
-1. Setup the codebase and train a un-conditional model on a landscape dataset.
-2. Train models that boost resolution and duration.
-
-- Extensions
-3. Conduct text2video experiments on landscape dataset.
-4. Train the 1080p model on video2text dataset.
-5. Control model with more conditions.
-
-
-<div style="display: flex; justify-content: center;"> 
-  <img src="assets/we_want_you.jpg" width=200> 
-  <img src="assets/framework.jpg" width=600> 
-</div>
-
-  
-## 📰 News
-
-**[2024.04.07]** 🚀🚀🚀 Today, we are thrilled to present Open-Sora-Plan v1.0.0, which significantly enhances video generation quality and text control capabilities. See our [report](docs/Report-v1.0.0.md). Thanks to HUAWEI NPU for supporting us.
-
-**[2024.03.27]** 🚀🚀🚀 We release the report of [VideoCausalVAE](docs/CausalVideoVAE.md), which supports both images and videos. We present our reconstructed video in this demonstration as follows. The text-to-video model is on the way.
-
-**[2024.03.10]** 🚀🚀🚀 This repo supports training a latent size of 225×90×90 (t×h×w), which means we are able to **train 1 minute of 1080P video with 30FPS** (2× interpolated frames and 2× super resolution) under class-condition.
-
-**[2024.03.08]** We support the training code of text condition with 16 frames of 512x512. The code is mainly borrowed from [Latte](https://github.com/Vchitect/Latte).
-
-**[2024.03.07]** We support training with 128 frames (when sample rate = 3, which is about 13 seconds) of 256x256, or 64 frames (which is about 6 seconds) of 512x512.
-
-**[2024.03.05]** See our latest [todo](https://github.com/PKU-YuanGroup/Open-Sora-Plan?tab=readme-ov-file#todo), pull requests are welcome.
-
-**[2024.03.04]** We re-organizes and modulizes our code to make it easy to [contribute](https://github.com/PKU-YuanGroup/Open-Sora-Plan?tab=readme-ov-file#how-to-contribute-to-the-open-sora-plan-community) to the project, to contribute please see the [Repo structure](https://github.com/PKU-YuanGroup/Open-Sora-Plan?tab=readme-ov-file#repo-structure).
-
-**[2024.03.03]** We opened some [discussions](https://github.com/PKU-YuanGroup/Open-Sora-Plan/discussions) to clarify several issues.
-
-**[2024.03.01]** Training code is available now! Learn more on our [project page](https://pku-yuangroup.github.io/Open-Sora-Plan/). Please feel free to watch 👀 this repository for the latest updates.
-
-
-## ✊ Todo
-
-#### Setup the codebase and train a unconditional model on landscape dataset
-- [x] Fix typos & Update readme. 🤝 Thanks to [@mio2333](https://github.com/mio2333), [@CreamyLong](https://github.com/CreamyLong), [@chg0901](https://github.com/chg0901), [@Nyx-177](https://github.com/Nyx-177), [@HowardLi1984](https://github.com/HowardLi1984), [@sennnnn](https://github.com/sennnnn), [@Jason-fan20](https://github.com/Jason-fan20)
-- [x] Setup environment. 🤝 Thanks to [@nameless1117](https://github.com/nameless1117)
-- [ ] Add docker file. ⌛ [WIP] 🤝 Thanks to [@Mon-ius](https://github.com/Mon-ius), [@SimonLeeGit](https://github.com/SimonLeeGit)
-- [ ] Enable type hints for functions. 🤝 Thanks to [@RuslanPeresy](https://github.com/RuslanPeresy), 🙏 **[Need your contribution]**
-- [x] Resume from checkpoint.
-- [x] Add Video-VQGAN model, which is borrowed from [VideoGPT](https://github.com/wilson1yan/VideoGPT).
-- [x] Support variable aspect ratios, resolutions, durations training on [DiT](https://github.com/facebookresearch/DiT).
-- [x] Support Dynamic mask input inspired by [FiT](https://github.com/whlzy/FiT).
-- [x] Add class-conditioning on embeddings.
-- [x] Incorporating [Latte](https://github.com/Vchitect/Latte) as main codebase.
-- [x] Add VAE model, which is borrowed from [Stable Diffusion](https://github.com/CompVis/latent-diffusion).
-- [x] Joint dynamic mask input with VAE.
-- [ ] Add VQVAE from [VQGAN](https://github.com/CompVis/taming-transformers). 🙏 **[Need your contribution]**
-- [ ] Make the codebase ready for the cluster training. Add SLURM scripts. 🙏 **[Need your contribution]**
-- [x] Refactor VideoGPT. 🤝 Thanks to [@qqingzheng](https://github.com/qqingzheng), [@luo3300612](https://github.com/luo3300612), [@sennnnn](https://github.com/sennnnn)
-- [x] Add sampling script.
-- [ ] Add DDP sampling script. ⌛ [WIP]
-- [x] Use accelerate on multi-node. 🤝 Thanks to [@sysuyy](https://github.com/sysuyy)
-- [x] Incorporate [SiT](https://github.com/willisma/SiT). 🤝 Thanks to [@khan-yin](https://github.com/khan-yin)
-- [x] Add evaluation scripts (FVD, CLIP score). 🤝 Thanks to [@rain305f](https://github.com/rain305f)
-
-#### Train models that boost resolution and duration
-- [x] Add [PI](https://arxiv.org/abs/2306.15595) to support out-of-domain size. 🤝 Thanks to [@jpthu17](https://github.com/jpthu17)
-- [x] Add 2D RoPE to improve generalization ability as [FiT](https://github.com/whlzy/FiT). 🤝 Thanks to [@jpthu17](https://github.com/jpthu17)
-- [x] Compress KV according to [PixArt-sigma](https://pixart-alpha.github.io/PixArt-sigma-project). 
-- [x] Support deepspeed for videogpt training. 🤝 Thanks to [@sennnnn](https://github.com/sennnnn)
-- [x] Train a **low dimension** Video-AE, whether it is VAE or VQVAE.
-- [x] Extract offline feature.
-- [x] Train with offline feature.
-- [x] Add frame interpolation model. 🤝 Thanks to [@yunyangge](https://github.com/yunyangge)
-- [x] Add super resolution model. 🤝 Thanks to [@Linzy19](https://github.com/Linzy19)
-- [x] Add accelerate to automatically manage training.
-- [ ] Joint training with images. 🙏 **[Need your contribution]**
-- [ ] Implement [MaskDiT](https://github.com/Anima-Lab/MaskDiT) technique for fast training. 🙏 **[Need your contribution]**
-- [ ] Incorporate [NaViT](https://arxiv.org/abs/2307.06304). 🙏 **[Need your contribution]**
-- [ ] Add [FreeNoise](https://github.com/arthur-qiu/FreeNoise-LaVie) support for training-free longer video generation. 🙏 **[Need your contribution]**
-
-#### Conduct text2video experiments on landscape dataset.
-- [ ] Implement [PeRFlow](https://github.com/magic-research/piecewise-rectified-flow) for improving the sampling process. 🙏 **[Need your contribution]**
-- [x] Finish data loading, pre-processing utils.
-- [x] Add T5 support. 
-- [x] Add CLIP support. 🤝 Thanks to [@Ytimed2020](https://github.com/Ytimed2020)
-- [x] Add text2image training script.
-- [ ] Add prompt captioner. 
-  - [ ] Collect training data.
-    - [ ] Need video-text pairs with caption. 🙏 **[Need your contribution]**
-    - [ ] Extract multi-frame descriptions by large image-language models. 🤝 Thanks to [@HowardLi1984](https://github.com/HowardLi1984)
-    - [ ] Extract video description by large video-language models. 🙏 **[Need your contribution]**
-    - [ ] Integrate captions to get a dense caption by using a large language model, such as GPT-4. 🤝 Thanks to [@HowardLi1984](https://github.com/HowardLi1984)
-  - [ ] Train a captioner to refine captions. 🚀 **[Require more computation]**
-
-#### Train the 1080p model on video2text dataset
-- [ ] Looking for a suitable dataset, welcome to discuss and recommend. 🙏 **[Need your contribution]**
-- [ ] Add synthetic video created by game engines or 3D representations. 🙏 **[Need your contribution]**
-- [x] Finish data loading, and pre-processing utils. ⌛ [WIP]
-- [ ] Support memory friendly training.
-  - [x] Add flash-attention2 from pytorch.
-  - [x] Add xformers.  🤝 Thanks to [@jialin-zhao](https://github.com/jialin-zhao)
-  - [x] Support mixed precision training.
-  - [x] Add gradient checkpoint.
-  - [x] Support for ReBased and Ring attention. 🤝 Thanks to [@kabachuha](https://github.com/kabachuha)
-  - [x] Train using the deepspeed engine. 🤝 Thanks to [@sennnnn](https://github.com/sennnnn)
-  - [ ] Integrate with [Colossal-AI](https://github.com/PKU-YuanGroup/Open-Sora-Plan/issues/59#issue-2170735221) for a cheaper, faster, and more efficient. 🙏 **[Need your contribution]**
-- [ ] Train with a text condition. Here we could conduct different experiments: 🚀 **[Require more computation]**
-  - [x] Train with T5 conditioning.
-  - [ ] Train with CLIP conditioning.
-  - [ ] Train with CLIP + T5 conditioning (probably costly during training and experiments).
-
-#### Control model with more condition
-- [x] Load pretrained weights from [Latte](https://github.com/Vchitect/Latte).
-- [ ] Incorporating [ControlNet](https://github.com/lllyasviel/ControlNet). 🙏 **[Need your contribution]**
-
-## 📂 Repo structure (WIP)
-```
-├── README.md
-├── docs
-│   ├── Data.md                    -> Datasets description.
-│   ├── Contribution_Guidelines.md -> Contribution guidelines description.
-├── scripts                        -> All scripts.
-├── opensora
-│   ├── dataset
-│   ├── models
-│   │   ├── ae                     -> Compress videos to latents
-│   │   │   ├── imagebase
-│   │   │   │   ├── vae
-│   │   │   │   └── vqvae
-│   │   │   └── videobase
-│   │   │       ├── vae
-│   │   │       └── vqvae
-│   │   ├── captioner
-│   │   ├── diffusion              -> Denoise latents
-│   │   │   ├── diffusion         
-│   │   │   ├── dit
-│   │   │   ├── latte
-│   │   │   └── unet
-│   │   ├── frame_interpolation
-│   │   ├── super_resolution
-│   │   └── text_encoder
-│   ├── sample
-│   ├── train                      -> Training code
-│   └── utils
+```ShellSession
+$ ./install.sh
 ```
 
-## 🛠️ Requirements and Installation
+#### From source
 
-1. Clone this repository and navigate to Open-Sora-Plan folder
-```
-git clone https://github.com/PKU-YuanGroup/Open-Sora-Plan
-cd Open-Sora-Plan
-```
-2. Install required packages
-```
-conda create -n opensora python=3.8 -y
-conda activate opensora
-pip install -e .
-```
-3. Install additional packages for training cases
-```
-pip install -e ".[train]"
-pip install flash-attn --no-build-isolation
-```
-4. Install optional requirements such as static type checking:
-```
-pip install -e '.[dev]'
+- Place the `git-lfs` binary on your system’s executable `$PATH` or equivalent.
+- Git LFS requires global configuration changes once per-machine. This can be done by
+running:
+
+```ShellSession
+$ git lfs install
 ```
 
-## 🗝️ Usage
+#### Verifying releases
 
+Releases are signed with the OpenPGP key of one of the core team members.  To
+get these keys, you can run the following command, which will print them to
+standard output:
 
-### 🤗 Demo
+```ShellSession
+$ curl -L https://api.github.com/repos/git-lfs/git-lfs/tarball/core-gpg-keys | tar -Ozxf -
+```
 
-#### Gradio Web UI  <a href='https://github.com/gradio-app/gradio'><img src='https://img.shields.io/github/stars/gradio-app/gradio'></a> 
+Once you have the keys, you can download the `sha256sums.asc` file and verify
+the file you want like so:
 
-Highly recommend trying out our web demo by the following command. We also provide [online demo](https://huggingface.co/spaces/LanguageBind/Open-Sora-Plan-v1.0.0) [![hf_space](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue.svg)](https://huggingface.co/spaces/LanguageBind/Open-Sora-Plan-v1.0.0) and [![hf_space](https://img.shields.io/badge/🤗-Open%20In%20Spaces-blue.svg)](https://huggingface.co/spaces/fffiloni/Open-Sora-Plan-v1-0-0) in Huggingface Spaces. 
+```ShellSession
+$ gpg -d sha256sums.asc | grep git-lfs-linux-amd64-v2.10.0.tar.gz | shasum -a 256 -c
+```
 
-🤝 Enjoying the [![Replicate demo and cloud API](https://replicate.com/camenduru/open-sora-plan-512x512/badge)](https://replicate.com/camenduru/open-sora-plan-512x512) and [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/camenduru/Open-Sora-Plan-jupyter/blob/main/Open_Sora_Plan_jupyter.ipynb), created by [@camenduru](https://github.com/camenduru), who generously supports our research!
+## Example Usage
+
+To begin using Git LFS within a Git repository that is not already configured
+for Git LFS, you can indicate which files you would like Git LFS to manage.
+This can be done by running the following _from within a Git repository_:
 
 ```bash
-python -m opensora.serve.gradio_web_server
+$ git lfs track "*.psd"
 ```
 
-#### CLI Inference
+(Where `*.psd` is the pattern of filenames that you wish to track. You can read
+more about this pattern syntax
+[here](https://git-scm.com/docs/gitattributes)).
+
+> *Note:* the quotation marks surrounding the pattern are important to
+> prevent the glob pattern from being expanded by the shell.
+
+After any invocation of `git-lfs-track(1)` or `git-lfs-untrack(1)`, you _must
+commit changes to your `.gitattributes` file_. This can be done by running:
 
 ```bash
-sh scripts/text_condition/sample_video.sh
+$ git add .gitattributes
+$ git commit -m "track *.psd files using Git LFS"
 ```
 
-### Datasets
-Refer to [Data.md](docs/Data.md)
+You can now interact with your Git repository as usual, and Git LFS will take
+care of managing your large files. For example, changing a file named `my.psd`
+(tracked above via `*.psd`):
 
-###  Evaluation
-Refer to the document [EVAL.md](docs/EVAL.md).
-
-### Causal Video VAE
-
-#### Reconstructing
-
-```Python
-python examples/rec_video_vae.py --rec-path test_video.mp4 --video-path video.mp4 --resolution 512 --num-frames 1440 --sample-rate 1 --sample-fps 24 -
--device cuda --ckpt <Your ckpt>
+```bash
+$ git add my.psd
+$ git commit -m "add psd"
 ```
 
-#### Training and Inference
+> _Tip:_ if you have large files already in your repository's history, `git lfs
+> track` will _not_ track them retroactively. To migrate existing large files
+> in your history to use Git LFS, use `git lfs migrate`. For example:
+>
+> ```
+> $ git lfs migrate import --include="*.psd" --everything
+> ```
+>
+> For more information, read [`git-lfs-migrate(1)`](https://github.com/git-lfs/git-lfs/blob/master/docs/man/git-lfs-migrate.1.ronn).
 
-Please refer to the document [CausalVideoVAE](docs/Train_And_Eval_CausalVideoVAE.md).
+You can confirm that Git LFS is managing your PSD file:
 
-### VideoGPT VQVAE
-
-Please refer to the document [VQVAE](docs/VQVAE.md).
-
-### Video Diffusion Transformer
-
-#### Training
-```
-sh scripts/text_condition/train_videoae_17x256x256.sh
-```
-```
-sh scripts/text_condition/train_videoae_65x256x256.sh
-```
-```
-sh scripts/text_condition/train_videoae_65x512x512.sh
+```bash
+$ git lfs ls-files
+3c2f7aedfb * my.psd
 ```
 
+Once you've made your commits, push your files to the Git remote:
 
-## 🚀 Improved Training Performance
+```bash
+$ git push origin master
+Uploading LFS objects: 100% (1/1), 810 B, 1.2 KB/s
+# ...
+To https://github.com/git-lfs/git-lfs-test
+   67fcf6a..47b2002  master -> master
+```
 
-In comparison to the original implementation, we implement a selection of training speed acceleration and memory saving features including gradient checkpointing, mixed precision training, and pre-extracted features, xformers, deepspeed. Some data points using **a batch size of 1 with a A100**:
- 
-### 64×32×32 (origin size: 256×256×256)
+Note: Git LFS requires at least Git 1.8.2 on Linux or 1.8.5 on macOS.
 
-| gradient checkpointing | mixed precision | xformers | feature pre-extraction | deepspeed config | compress kv | training speed | memory       |
-|:----------------------:|:---------------:|:--------:|:----------------------:|:----------------:|:--------------:|:------------:|:------------:|
-| ✔                     | ✔               | ✔        | ✔                     | ❌               | ❌            |0.64 steps/sec  |   43G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2             | ❌            |0.66 steps/sec  |   14G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2             | ✔             |0.66 steps/sec  |   15G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2 offload     | ❌            |0.33 steps/sec  |   11G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2 offload     | ✔             |0.31 steps/sec  |   12G        |
+## Limitations
 
-### 128×64×64 (origin size: 512×512×512)
+Git LFS maintains a list of currently known limitations, which you can find and
+edit [here](https://github.com/git-lfs/git-lfs/wiki/Limitations).
 
-| gradient checkpointing | mixed precision | xformers | feature pre-extraction | deepspeed config | compress kv | training speed | memory       |
-|:----------------------:|:---------------:|:--------:|:----------------------:|:----------------:|:--------------:|:------------:|:------------:|
-| ✔                     | ✔               | ✔        | ✔                     | ❌               | ❌            |0.08 steps/sec  |   77G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2             | ❌            |0.08 steps/sec  |   41G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2             | ✔             |0.09 steps/sec  |   36G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2 offload     | ❌            |0.07 steps/sec  |   39G        |
-| ✔                     | ✔               | ✔        | ✔                     | Zero2 offload     | ✔             |0.07 steps/sec  |   33G        |
+## Need Help?
 
-## 💡 How to Contribute to the Open-Sora Plan Community
-We greatly appreciate your contributions to the Open-Sora Plan open-source community and helping us make it even better than it is now!
+You can get help on specific commands directly:
 
-For more details, please refer to the [Contribution Guidelines](docs/Contribution_Guidelines.md)
+```bash
+$ git lfs help <subcommand>
+```
 
+The [official documentation](docs) has command references and specifications for
+the tool.  There's also a [FAQ](https://github.com/git-lfs/git-lfs/wiki/FAQ) on
+the wiki which answers some common questions.
 
+You can always [open an issue](https://github.com/git-lfs/git-lfs/issues), and
+one of the Core Team members will respond to you. Please be sure to include:
 
+1. The output of `git lfs env`, which displays helpful information about your
+   Git repository useful in debugging.
+2. Any failed commands re-run with `GIT_TRACE=1` in the environment, which
+   displays additional information pertaining to why a command crashed.
 
-## 👍 Acknowledgement
-* [Latte](https://github.com/Vchitect/Latte): The **main codebase** we built upon and it is an wonderful video gererated model.
-* [PixArt-alpha](https://github.com/PixArt-alpha/PixArt-alpha): Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis.
-* [VideoGPT](https://github.com/wilson1yan/VideoGPT): Video Generation using VQ-VAE and Transformers.
-* [DiT](https://github.com/facebookresearch/DiT): Scalable Diffusion Models with Transformers.
-* [FiT](https://github.com/whlzy/FiT): Flexible Vision Transformer for Diffusion Model.
-* [Positional Interpolation](https://arxiv.org/abs/2306.15595): Extending Context Window of Large Language Models via Positional Interpolation.
+## Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for info on working on Git LFS and
+sending patches. Related projects are listed on the [Implementations wiki
+page](https://github.com/git-lfs/git-lfs/wiki/Implementations).
 
-## 🔒 License
-* See [LICENSE](LICENSE) for details.
+See also [SECURITY.md](SECURITY.md) for info on how to submit reports
+of security vulnerabilities.
 
-<!--
-## ✨ Star History
+## Core Team
 
-[![Star History](https://api.star-history.com/svg?repos=PKU-YuanGroup/Open-Sora-Plan)](https://star-history.com/#PKU-YuanGroup/Open-Sora-Plan&Date)
--->
+These are the humans that form the Git LFS core team, which runs the project.
 
-## 🤝 Community contributors
+In alphabetical order:
 
-<a href="https://github.com/PKU-YuanGroup/Open-Sora-Plan/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=PKU-YuanGroup/Open-Sora-Plan" />
-</a>
+| [@bk2204][bk2204-user] | [@chrisd8088][chrisd8088-user] | [@larsxschneider][larsxschneider-user] |
+| :---: | :---: | :---: |
+| [![][bk2204-img]][bk2204-user] | [![][chrisd8088-img]][chrisd8088-user] | [![][larsxschneider-img]][larsxschneider-user] |
+| [PGP 0223B187][bk2204-pgp] | [PGP 088335A9][chrisd8088-pgp] | [PGP A5795889][larsxschneider-pgp] |
+
+[bk2204-img]: https://avatars1.githubusercontent.com/u/497054?s=100&v=4
+[chrisd8088-img]: https://avatars1.githubusercontent.com/u/28857117?s=100&v=4
+[larsxschneider-img]: https://avatars1.githubusercontent.com/u/477434?s=100&v=4
+[bk2204-user]: https://github.com/bk2204
+[chrisd8088-user]: https://github.com/chrisd8088
+[larsxschneider-user]: https://github.com/larsxschneider
+[bk2204-pgp]: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x88ace9b29196305ba9947552f1ba225c0223b187
+[chrisd8088-pgp]: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x09b4bf756670b76d63515717506c7945088335a9
+[larsxschneider-pgp]: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xaa3b3450295830d2de6db90caba67be5a5795889
+
+### Alumni
+
+These are the humans that have in the past formed the Git LFS core team, or
+have otherwise contributed a significant amount to the project. Git LFS would
+not be possible without them.
+
+In alphabetical order:
+
+| [@andyneff][andyneff-user] | [@PastelMobileSuit][PastelMobileSuit-user] | [@rubyist][rubyist-user] | [@sinbad][sinbad-user] | [@technoweenie][technoweenie-user] | [@ttaylorr][ttaylorr-user] |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| [![][andyneff-img]][andyneff-user] | [![][PastelMobileSuit-img]][PastelMobileSuit-user] | [![][rubyist-img]][rubyist-user] | [![][sinbad-img]][sinbad-user] | [![][technoweenie-img]][technoweenie-user] | [![][ttaylorr-img]][ttaylorr-user] |
+
+[andyneff-img]: https://avatars1.githubusercontent.com/u/7596961?v=3&s=100
+[PastelMobileSuit-img]: https://avatars2.githubusercontent.com/u/37254014?s=100&v=4
+[rubyist-img]: https://avatars1.githubusercontent.com/u/143?v=3&s=100
+[sinbad-img]: https://avatars1.githubusercontent.com/u/142735?v=3&s=100
+[technoweenie-img]: https://avatars3.githubusercontent.com/u/21?v=3&s=100
+[ttaylorr-img]: https://avatars2.githubusercontent.com/u/443245?s=100&v=4
+[andyneff-user]: https://github.com/andyneff
+[PastelMobileSuit-user]: https://github.com/PastelMobileSuit
+[sinbad-user]: https://github.com/sinbad
+[rubyist-user]: https://github.com/rubyist
+[technoweenie-user]: https://github.com/technoweenie
+[ttaylorr-user]: https://github.com/ttaylorr

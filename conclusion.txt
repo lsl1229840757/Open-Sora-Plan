@@ -1,0 +1,9 @@
+训练阶段: 
+1. Clips的训练长度会影响生产视频的motion blur问题, 长度越长该问题越轻
+2. 在显卡受限制的情况下Clips长度和Resolution要有所取舍, 优先保Res, 尽管生成的视频会有blur的问题, 但是如果保Clips长度的话会导致apperance重建失败, 看都没法看
+
+推理阶段:
+1. 推理的Clips长度越长越容易导致motion blur/apperance distortion的问题出现
+2. 推理的分辨率越高 则重建的效果更好，就算是高于训练时的分辨率也一样
+3. motion blur问题的缓解上面说了
+4. apperance distortion问题的缓解就需要增大训练的res

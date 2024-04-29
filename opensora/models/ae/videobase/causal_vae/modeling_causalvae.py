@@ -637,7 +637,11 @@ class CausalVAEModel(VideoBaseAE_PL):
         self.enable_tiling(False)
 
     def init_from_ckpt(self, path, ignore_keys=list(), remove_loss=True):
-        sd = torch.load(path, map_location="cpu")
+        if 'safetensors' in path:
+            from safetensors.torch import load_file as safe_load
+            sd = safe_load(path, device='cpu')
+        else:
+            sd = torch.load(path, map_location="cpu")
         if "state_dict" in sd:
             sd = sd["state_dict"]
         keys = list(sd.keys())

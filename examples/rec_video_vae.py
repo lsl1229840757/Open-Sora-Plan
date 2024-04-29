@@ -13,6 +13,8 @@ from torchvision.transforms._transforms_video import CenterCropVideo
 import sys
 from torch.utils.data import Dataset, DataLoader, Subset
 import os
+import imageio
+from os import path as osp
 
 sys.path.append(".")
 from opensora.models.ae.videobase import CausalVAEModel
@@ -22,16 +24,16 @@ import torch.nn as nn
 def array_to_video(
     image_array: npt.NDArray, fps: float = 30.0, output_file: str = "output_video.mp4"
 ) -> None:
-    height, width, channels = image_array[0].shape
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    video_writer = cv2.VideoWriter(output_file, fourcc, float(fps), (width, height))
+    # height, width, channels = image_array[0].shape
+    # fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    # video_writer = cv2.VideoWriter(output_file, fourcc, float(fps), (width, height))
 
-    for image in image_array:
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        video_writer.write(image_rgb)
+    # for image in image_array:
+    #     image_rgb = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    #     video_writer.write(image_rgb)
 
-    video_writer.release()
-
+    # video_writer.release()
+    imageio.mimwrite(output_file, image_array, fps=fps, quality=9)
 
 def custom_to_video(
     x: torch.Tensor, fps: float = 2.0, output_file: str = "output_video.mp4"
@@ -41,6 +43,7 @@ def custom_to_video(
     x = (x + 1) / 2
     x = x.permute(1, 2, 3, 0).float().numpy()
     x = (255 * x).astype(np.uint8)
+    output_file = osp.join(osp.dirname(output_file), osp.splitext(osp.basename(output_file))[0] + '.mp4')
     array_to_video(x, fps=fps, output_file=output_file)
     return
 

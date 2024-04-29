@@ -17,3 +17,4 @@ wandb/
 *.log
 .vscode
 rec_dir/
+test_eval/

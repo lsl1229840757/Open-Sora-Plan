@@ -18,6 +18,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 
+
 @dataclass
 class TrainingArguments:
     exp_name: str = field(default="causalvae_r32")
@@ -52,8 +53,10 @@ def load_callbacks_and_logger(args):
         dirpath=args.output_dir,
         filename="model-{epoch:02d}-{step}",
         every_n_train_steps=args.save_steps,
-        save_top_k=-1,
+        save_top_k=5,
+        monitor='train/total_loss',
         save_on_train_epoch_end=False,
+        save_last=True
     )
     lr_monitor = LearningRateMonitor(logging_interval="step")
     logger = WandbLogger(name=args.exp_name, log_model=False, project='causalvae_ucf101')
@@ -92,7 +95,7 @@ def train(args):
         log_every_n_steps=5,
         precision=args.precision,
         max_steps=args.max_steps,
-        strategy="ddp_find_unused_parameters_true"
+        strategy="ddp_find_unused_parameters_true",
     )
     trainer_kwargs = {}
     if args.resume_from_checkpoint:

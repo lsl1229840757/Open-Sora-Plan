@@ -11,11 +11,13 @@ class CausalVAEModelWrapper(nn.Module):
         self.vae = CausalVAEModel.from_pretrained(model_path, subfolder=subfolder, cache_dir=cache_dir)
     def encode(self, x):  # b c t h w
         # x = self.vae.encode(x).sample()
-        x = self.vae.encode(x).sample().mul_(0.18215)
+        # x = self.vae.encode(x).sample().mul_(0.18215)  # TODO ???
+        
+        x = self.vae.encode(x).sample()
         return x
     def decode(self, x):
-        # x = self.vae.decode(x)
-        x = self.vae.decode(x / 0.18215)
+        x = self.vae.decode(x)
+        # x = self.vae.decode(x / 0.18215)
         x = rearrange(x, 'b c t h w -> b t c h w').contiguous()
         return x
 

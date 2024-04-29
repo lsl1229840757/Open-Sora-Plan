@@ -67,6 +67,14 @@ class VideoBaseAE_PL(pl.LightningModule, ModelMixin, ConfigMixin):
     
     @classmethod
     def from_pretrained(cls, pretrained_model_name_or_path: Optional[Union[str, os.PathLike]], **kwargs):
+        if os.path.isfile(pretrained_model_name_or_path):
+            pretrained_model_dir = os.path.dirname(pretrained_model_name_or_path)
+            config_file = os.path.join(pretrained_model_dir, 'hf', cls.config_name)
+            model = cls.from_config(config_file)
+            print("init from {}".format(pretrained_model_name_or_path))
+            model.init_from_ckpt(pretrained_model_name_or_path)
+            return model
+
         ckpt_files = sorted(glob.glob(os.path.join(pretrained_model_name_or_path, '*.ckpt')))
         if ckpt_files:
             # Adapt to PyTorch Lightning
